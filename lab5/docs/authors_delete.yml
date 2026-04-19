@@ -1,0 +1,12 @@
+tags:
+  - authors
+parameters:
+  - in: path
+    name: author_id
+    required: true
+    type: string
+responses:
+  200:
+    description: Deleted
+  404:
+    description: Not found

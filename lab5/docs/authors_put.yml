@@ -1,0 +1,21 @@
+tags:
+  - authors
+parameters:
+  - in: path
+    name: author_id
+    required: true
+    type: string
+  - in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/components/schemas/AuthorCreate'
+responses:
+  200:
+    description: OK
+    schema:
+      $ref: '#/components/schemas/Author'
+  400:
+    description: Validation error
+  404:
+    description: Not found
