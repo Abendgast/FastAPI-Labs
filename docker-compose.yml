@@ -17,11 +17,17 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
   app:
     build: .
     depends_on:
       - db
       - mongo
+      - redis
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/library
       MONGO_URL: mongodb://mongo:27017
