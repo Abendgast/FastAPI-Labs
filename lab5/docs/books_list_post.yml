@@ -1,0 +1,15 @@
+tags:
+  - books
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/components/schemas/BookCreate'
+responses:
+  201:
+    description: Created
+    schema:
+      $ref: '#/components/schemas/Book'
+  400:
+    description: Validation error

@@ -1,0 +1,15 @@
+tags:
+  - authors
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      $ref: '#/components/schemas/AuthorCreate'
+responses:
+  201:
+    description: Created
+    schema:
+      $ref: '#/components/schemas/Author'
+  400:
+    description: Validation error

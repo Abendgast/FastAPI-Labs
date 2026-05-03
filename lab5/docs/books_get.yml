@@ -1,0 +1,14 @@
+tags:
+  - books
+parameters:
+  - in: path
+    name: book_id
+    required: true
+    type: string
+responses:
+  200:
+    description: OK
+    schema:
+      $ref: '#/components/schemas/Book'
+  404:
+    description: Not found
