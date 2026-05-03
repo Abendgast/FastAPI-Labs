@@ -1,9 +1,0 @@
-tags:
-  - authors
-responses:
-  200:
-    description: OK
-    schema:
-      type: array
-      items:
-        $ref: '#/components/schemas/Author'
