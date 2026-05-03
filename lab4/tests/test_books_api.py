@@ -8,6 +8,7 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from mongomock_motor import AsyncMongoMockClient
 TEST_MONGO_URL = os.getenv("TEST_MONGO_URL", "mongodb://localhost:27017")
 TEST_DB_NAME = "library_test"
 TEST_COLLECTION_NAME = "books_test"
@@ -22,8 +23,8 @@ from lab4.main import app
 def anyio_backend() -> str:
     return "asyncio"
 
-def _create_mongo_client_sync() -> AsyncIOMotorClient:
-    return AsyncIOMotorClient(TEST_MONGO_URL)
+def _create_mongo_client_sync() -> AsyncMongoMockClient:
+    return AsyncMongoMockClient()
 
 @pytest.fixture(scope="session")
 def mongo_client() -> Generator[AsyncIOMotorClient, None, None]:
@@ -159,7 +160,7 @@ def test_get_book_by_id_found(client: TestClient):
     assert data["id"] == book_id
 
 def test_get_book_by_id_not_found(client: TestClient):
-    fake_id = "123e4567e89b12d3a456426614174000"
+    fake_id = "123e4567e89b12d3a4564266"
     response = client.get(f"/books/{fake_id}")
     assert response.status_code in (404, 422)
 
@@ -174,7 +175,7 @@ def test_delete_book_idempotent(client: TestClient):
     assert response.status_code == 204
 
 def test_delete_nonexistent_book_still_204(client: TestClient):
-    fake_id = "123e4567e89b12d3a456426614174000"
+    fake_id = "123e4567e89b12d3a4564266"
     response = client.delete(f"/books/{fake_id}")
     assert response.status_code in (204, 422)
 
