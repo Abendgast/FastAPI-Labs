@@ -12,7 +12,6 @@ from resources import (
 )
 from storage import LibraryStore
 
-
 def create_app() -> Flask:
     app = Flask(__name__)
     app.config["SWAGGER"] = {
@@ -87,7 +86,6 @@ def create_app() -> Flask:
         return jsonify({"status": "ok"})
 
     return app
-
 
 app = create_app()
 

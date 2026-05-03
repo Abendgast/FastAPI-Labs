@@ -6,15 +6,12 @@ from flasgger import swag_from
 
 from storage import LibraryStore
 
-
 def _json() -> dict:
     data = request.get_json(silent=True)
     return data if isinstance(data, dict) else {}
 
-
 def _err(message: str, code: int):
     return {"message": message}, code
-
 
 class AuthorListResource(Resource):
     def __init__(self, store: LibraryStore):
@@ -32,7 +29,6 @@ class AuthorListResource(Resource):
             return _err("Validation error", 400)
         doc = self.store.create_author(name=name.strip())
         return doc, 201
-
 
 class AuthorResource(Resource):
     def __init__(self, store: LibraryStore):
@@ -63,7 +59,6 @@ class AuthorResource(Resource):
             return _err("Not found", 404)
         return {"status": "deleted"}, 200
 
-
 class BookListResource(Resource):
     def __init__(self, store: LibraryStore):
         self.store = store
@@ -91,7 +86,6 @@ class BookListResource(Resource):
         if not created:
             return _err("Validation error", 400)
         return created, 201
-
 
 class BookResource(Resource):
     def __init__(self, store: LibraryStore):

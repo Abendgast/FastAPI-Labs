@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from lab2.models.book import Book
 from lab2.schemas.book import BookStatus, SortBy, SortOrder
 
-
 async def list_books_repo(
     session: AsyncSession,
     *,
@@ -51,17 +50,14 @@ async def list_books_repo(
 
     return items, total
 
-
 async def get_book_by_id_repo(session: AsyncSession, book_id: str) -> Book | None:
     return await session.get(Book, book_id)
-
 
 async def create_book_repo(session: AsyncSession, book: Book) -> Book:
     session.add(book)
     await session.commit()
     await session.refresh(book)
     return book
-
 
 async def delete_book_repo(session: AsyncSession, book_id: str) -> None:
     book = await session.get(Book, book_id)

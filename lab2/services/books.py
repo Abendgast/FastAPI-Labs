@@ -18,7 +18,6 @@ from lab2.schemas.book import (
     SortOrder,
 )
 
-
 async def list_books_service(
     session: AsyncSession,
     *,
@@ -45,7 +44,6 @@ async def list_books_service(
         offset=offset,
     )
 
-
 async def get_book_by_id_service(
     session: AsyncSession, book_id: str
 ) -> BookRead | None:
@@ -53,7 +51,6 @@ async def get_book_by_id_service(
     if not book:
         return None
     return BookRead.model_validate(book)
-
 
 async def create_book_service(
     session: AsyncSession, book_in: BookCreate
@@ -68,7 +65,6 @@ async def create_book_service(
     )
     book = await create_book_repo(session, book)
     return BookRead.model_validate(book)
-
 
 async def delete_book_service(session: AsyncSession, book_id: str) -> None:
     await delete_book_repo(session, book_id)

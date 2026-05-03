@@ -13,22 +13,18 @@ from jose import JWTError, jwt
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-change-me")
 JWT_ALG = os.getenv("JWT_ALG", "HS256")
-ACCESS_TOKEN_TTL_SECONDS = int(os.getenv("ACCESS_TOKEN_TTL_SECONDS", "300"))  # 5 min
-REFRESH_TOKEN_TTL_SECONDS = int(os.getenv("REFRESH_TOKEN_TTL_SECONDS", "1209600"))  # 14 days
+ACCESS_TOKEN_TTL_SECONDS = int(os.getenv("ACCESS_TOKEN_TTL_SECONDS", "300"))
+REFRESH_TOKEN_TTL_SECONDS = int(os.getenv("REFRESH_TOKEN_TTL_SECONDS", "1209600"))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
-
 
 def _now() -> int:
     return int(time.time())
 
-
 def _hash_password(password: str) -> str:
-    # store as utf-8 string to keep JSON-serializable
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
     return hashed.decode("utf-8")
-
 
 def _verify_password(password: str, password_hash: str) -> bool:
     try:
@@ -36,20 +32,15 @@ def _verify_password(password: str, password_hash: str) -> bool:
     except ValueError:
         return False
 
-
 def _encode_jwt(payload: dict[str, Any]) -> str:
     return jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALG)
-
 
 def _decode_jwt(token: str) -> dict[str, Any]:
     return jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALG])
 
-
 @dataclass
 class AuthStore:
-    # demo users: username -> dict with password_hash
     users: dict[str, dict[str, Any]] = field(default_factory=dict)
-    # refresh token rotation: active refresh jti -> record
     refresh_tokens: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def ensure_demo_user(self) -> None:
@@ -108,25 +99,20 @@ class AuthStore:
         if exp < _now():
             self.refresh_tokens.pop(jti, None)
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token expired")
-
-        # rotation: token must be currently active; after use it is revoked
         existing = self.refresh_tokens.pop(jti, None)
         if not existing:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token revoked")
 
         return self.issue_token_pair(username=username)
 
-
 def get_auth_store() -> AuthStore:
-    # module-level singleton (in-memory)
-    global _AUTH_STORE  # type: ignore[var-annotated]
+    global _AUTH_STORE
     try:
         store = _AUTH_STORE
     except NameError:
         store = AuthStore()
         _AUTH_STORE = store
     return store
-
 
 def login_and_issue_tokens(
     form: OAuth2PasswordRequestForm = Depends(),
@@ -141,7 +127,6 @@ def login_and_issue_tokens(
         )
     access, refresh = store.issue_token_pair(username=user["username"])
     return {"access_token": access, "refresh_token": refresh, "token_type": "bearer"}
-
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),

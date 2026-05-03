@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from lab3.models.book import Book
 from lab3.schemas.book import BookStatus, SortBy, SortOrder
 
-
 async def list_books_repo(
     session: AsyncSession,
     *,
@@ -33,8 +32,6 @@ async def list_books_repo(
 
     if sort_order == SortOrder.desc:
         order_col = order_col.desc()
-
-    # Беремо на один запис більше, щоб визначити наявність наступної сторінки
     stmt = stmt.order_by(order_col).limit(limit + 1).offset(offset)
 
     result = await session.execute(stmt)
@@ -42,17 +39,14 @@ async def list_books_repo(
 
     return items
 
-
 async def get_book_by_id_repo(session: AsyncSession, book_id: str) -> Book | None:
     return await session.get(Book, book_id)
-
 
 async def create_book_repo(session: AsyncSession, book: Book) -> Book:
     session.add(book)
     await session.commit()
     await session.refresh(book)
     return book
-
 
 async def delete_book_repo(session: AsyncSession, book_id: str) -> None:
     book = await session.get(Book, book_id)

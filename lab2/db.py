@@ -9,10 +9,8 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-
 class Base(DeclarativeBase):
     pass
-
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
@@ -26,14 +24,11 @@ SessionLocal = async_sessionmaker(
     class_=AsyncSession,
 )
 
-
 async def init_db() -> None:
-    # Імпорт моделей, щоб Base знала про них
-    from lab2.models.book import Book  # noqa: F401
+    from lab2.models.book import Book
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:

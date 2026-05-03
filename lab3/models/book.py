@@ -8,7 +8,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from lab3.db import Base
 from lab3.schemas.book import BookStatus
 
-
 class Book(Base):
     __tablename__ = "books"
 

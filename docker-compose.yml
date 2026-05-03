@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16
@@ -12,15 +10,24 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
   app:
     build: .
     depends_on:
       - db
+      - mongo
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/library
+      MONGO_URL: mongodb://mongo:27017
     ports:
       - "8000:8000"
 
 volumes:
   db_data:
-
+  mongo_data:

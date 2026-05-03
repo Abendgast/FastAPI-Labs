@@ -19,11 +19,9 @@ from lab3.schemas.book import (
     SortOrder,
 )
 
-
 def encode_cursor(offset: int) -> str:
     raw = str(offset).encode("utf-8")
     return base64.urlsafe_b64encode(raw).decode("utf-8")
-
 
 def decode_cursor(cursor: str) -> int:
     raw = base64.urlsafe_b64decode(cursor.encode("utf-8")).decode("utf-8")
@@ -31,7 +29,6 @@ def decode_cursor(cursor: str) -> int:
     if offset < 0:
         raise ValueError("Offset must be non-negative")
     return offset
-
 
 async def list_books_service(
     session: AsyncSession,
@@ -47,8 +44,6 @@ async def list_books_service(
         offset = 0
     else:
         offset = decode_cursor(cursor)
-
-    # Репозиторій повертає до limit + 1 записів
     raw_items = await list_books_repo(
         session,
         status_filter=status_filter,
@@ -73,7 +68,6 @@ async def list_books_service(
         next_cursor=next_cursor,
     )
 
-
 async def get_book_by_id_service(
     session: AsyncSession, book_id: str
 ) -> BookRead | None:
@@ -81,7 +75,6 @@ async def get_book_by_id_service(
     if not book:
         return None
     return BookRead.model_validate(book)
-
 
 async def create_book_service(
     session: AsyncSession, book_in: BookCreate
@@ -96,7 +89,6 @@ async def create_book_service(
     )
     book = await create_book_repo(session, book)
     return BookRead.model_validate(book)
-
 
 async def delete_book_service(session: AsyncSession, book_id: str) -> None:
     await delete_book_repo(session, book_id)

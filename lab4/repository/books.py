@@ -5,7 +5,6 @@ from pydantic_mongo import PydanticObjectId
 
 from lab4.schemas.book import BookCreate, BookRead, BookStatus, SortBy, SortOrder
 
-
 async def create_book_repo(
     collection: AsyncIOMotorCollection, book_in: BookCreate
 ) -> BookRead:
@@ -13,7 +12,6 @@ async def create_book_repo(
     result = await collection.insert_one(doc)
     created = await collection.find_one({"_id": result.inserted_id})
     return _mongo_to_book_read(created)
-
 
 async def get_book_by_id_repo(
     collection: AsyncIOMotorCollection, book_id: str
@@ -24,15 +22,12 @@ async def get_book_by_id_repo(
         return None
     return _mongo_to_book_read(doc)
 
-
 async def delete_book_repo(
     collection: AsyncIOMotorCollection, book_id: str
 ) -> None:
     oid = PydanticObjectId(book_id)
     response = await collection.delete_one({"_id": oid})
-    # idempotent: нічого не робимо, якщо deleted_count == 0
     _ = response.deleted_count
-
 
 async def list_books_repo(
     collection: AsyncIOMotorCollection,
@@ -49,7 +44,6 @@ async def list_books_repo(
         query["status"] = status_filter.value
 
     if author_filter:
-        # регістро-незалежний пошук по автору
         query["author"] = {"$regex": author_filter, "$options": "i"}
 
     if sort_by == SortBy.title:
@@ -57,8 +51,6 @@ async def list_books_repo(
     else:
         sort_field = "year"
     sort_direction = 1 if sort_order == SortOrder.asc else -1
-
-    # find({}) – синхронний у motor, але курсор асинхронний
     cursor = collection.find(query).sort(sort_field, sort_direction).skip(offset).limit(
         limit
     )
@@ -66,13 +58,10 @@ async def list_books_repo(
     docs: list[dict] = []
     async for doc in cursor:
         docs.append(doc)
-
-    # окремо рахуємо total
     total = await collection.count_documents(query)
 
     items = [_mongo_to_book_read(doc) for doc in docs]
     return items, int(total)
-
 
 def _mongo_to_book_read(doc: dict) -> BookRead:
     return BookRead(

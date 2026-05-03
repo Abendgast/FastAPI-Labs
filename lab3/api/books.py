@@ -20,9 +20,7 @@ from lab3.services.books import (
     decode_cursor,
 )
 
-
 router = APIRouter()
-
 
 @router.get(
     "",
@@ -55,7 +53,6 @@ async def get_books(
 ):
     if cursor is not None:
         try:
-            # Перевіряємо курсор ще до виклику сервісу, щоб повертати 400
             decode_cursor(cursor)
         except Exception:
             raise HTTPException(
@@ -73,7 +70,6 @@ async def get_books(
         cursor=cursor,
     )
 
-
 @router.get(
     "/{book_id}",
     response_model=BookRead,
@@ -88,7 +84,6 @@ async def get_book_by_id(book_id: str, session: AsyncSession = Depends(get_sessi
         )
     return book
 
-
 @router.post(
     "",
     response_model=BookRead,
@@ -99,7 +94,6 @@ async def create_book(
     book_in: BookCreate, session: AsyncSession = Depends(get_session)
 ):
     return await create_book_service(session, book_in)
-
 
 @router.delete(
     "/{book_id}",

@@ -8,7 +8,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from lab2.db import Base
 from lab2.schemas.book import BookStatus
 
-
 class Book(Base):
     __tablename__ = "books"
 
@@ -28,8 +27,5 @@ class Book(Base):
     year: Mapped[int] = mapped_column(Integer, nullable=False)
 
 from typing import Dict, List
-
-# In-memory "database" for books.
-# Кожна книга представлена як Dict, що відповідає схемі BookRead.
 BOOKS_DB: List[Dict] = []
 

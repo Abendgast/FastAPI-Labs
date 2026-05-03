@@ -15,7 +15,6 @@ from lab4.schemas.book import (
     SortOrder,
 )
 
-
 async def list_books_service(
     collection: AsyncIOMotorCollection,
     *,
@@ -42,18 +41,15 @@ async def list_books_service(
         offset=offset,
     )
 
-
 async def get_book_by_id_service(
     collection: AsyncIOMotorCollection, book_id: str
 ) -> BookRead | None:
     return await get_book_by_id_repo(collection, book_id)
 
-
 async def create_book_service(
     collection: AsyncIOMotorCollection, book_in: BookCreate
 ) -> BookRead:
     return await create_book_repo(collection, book_in)
-
 
 async def delete_book_service(
     collection: AsyncIOMotorCollection, book_id: str

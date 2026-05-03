@@ -19,9 +19,7 @@ from lab4.services.books import (
     list_books_service,
 )
 
-
 router = APIRouter()
-
 
 @router.get(
     "",
@@ -61,7 +59,6 @@ async def get_books(
         offset=offset,
     )
 
-
 @router.get(
     "/{book_id}",
     response_model=BookRead,
@@ -78,7 +75,6 @@ async def get_book_by_id(
         )
     return book
 
-
 @router.post(
     "",
     response_model=BookRead,
@@ -89,7 +85,6 @@ async def create_book(
     book_in: BookCreate, collection: AsyncIOMotorCollection = Depends(get_books_collection)
 ):
     return await create_book_service(collection, book_in)
-
 
 @router.delete(
     "/{book_id}",

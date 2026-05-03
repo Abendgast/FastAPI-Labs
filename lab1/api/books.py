@@ -11,9 +11,7 @@ from lab1.services.books import (
     list_books_service,
 )
 
-
 router = APIRouter()
-
 
 @router.get(
     "",
@@ -42,7 +40,6 @@ async def get_books(
         sort_order=sort_order,
     )
 
-
 @router.get(
     "/{book_id}",
     response_model=BookRead,
@@ -57,7 +54,6 @@ async def get_book_by_id(book_id: UUID):
         )
     return book
 
-
 @router.post(
     "",
     response_model=BookRead,
@@ -67,7 +63,6 @@ async def get_book_by_id(book_id: UUID):
 async def create_book(book_in: BookCreate):
     return await create_book_service(book_in)
 
-
 @router.delete(
     "/{book_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -75,6 +70,5 @@ async def create_book(book_in: BookCreate):
 )
 async def delete_book(book_id: UUID):
     await delete_book_service(book_id)
-    # Ідемпотентність: завжди повертаємо 204, навіть якщо книги не існувало
     return None
 
