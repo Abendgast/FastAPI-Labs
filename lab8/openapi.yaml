@@ -1,0 +1,135 @@
+openapi: 3.0.3
+info:
+  title: Library API (Mock)
+  version: 1.0.0
+  description: Mock API for the Library using Stoplight Prism
+paths:
+  /books:
+    get:
+      summary: List all books
+      responses:
+        '200':
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+              examples:
+                success:
+                  value:
+                    - id: "1"
+                      title: "1984"
+                      author: "George Orwell"
+                      year: 1949
+                      description: "Dystopian social science fiction novel"
+                    - id: "2"
+                      title: "To Kill a Mockingbird"
+                      author: "Harper Lee"
+                      year: 1960
+                      description: "Novel about the serious issues of rape and racial inequality"
+    post:
+      summary: Create a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreate'
+            examples:
+              newBook:
+                value:
+                  title: "The Great Gatsby"
+                  author: "F. Scott Fitzgerald"
+                  year: 1925
+                  description: "A novel about the American dream"
+      responses:
+        '201':
+          description: Created book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+              examples:
+                success:
+                  value:
+                    id: "3"
+                    title: "The Great Gatsby"
+                    author: "F. Scott Fitzgerald"
+                    year: 1925
+                    description: "A novel about the American dream"
+  /books/{book_id}:
+    get:
+      summary: Get book by ID
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A single book
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+              examples:
+                success:
+                  value:
+                    id: "1"
+                    title: "1984"
+                    author: "George Orwell"
+                    year: 1949
+                    description: "Dystopian social science fiction novel"
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+              examples:
+                notFound:
+                  value:
+                    detail: "Book not found"
+    delete:
+      summary: Delete a book
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Book deleted successfully
+components:
+  schemas:
+    BookCreate:
+      type: object
+      required:
+        - title
+        - author
+        - year
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        year:
+          type: integer
+        description:
+          type: string
+    Book:
+      allOf:
+        - $ref: '#/components/schemas/BookCreate'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string

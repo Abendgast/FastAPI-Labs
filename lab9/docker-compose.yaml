@@ -1,0 +1,21 @@
+services:
+  locust-master:
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./locustfile.py:/mnt/locust/locustfile.py
+    command: -f /mnt/locust/locustfile.py --master
+    # Дозволяє контейнеру бачити localhost хоста через host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  locust-worker:
+    image: locustio/locust
+    volumes:
+      - ./locustfile.py:/mnt/locust/locustfile.py
+    command: -f /mnt/locust/locustfile.py --worker --master-host=locust-master
+    depends_on:
+      - locust-master
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

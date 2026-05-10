@@ -1,0 +1,8 @@
+services:
+  prism:
+    image: stoplight/prism:latest
+    ports:
+      - "4010:4010"
+    volumes:
+      - ./openapi.yaml:/tmp/openapi.yaml
+    command: mock /tmp/openapi.yaml -h 0.0.0.0 -m false
